@@ -51,7 +51,7 @@ const BookingSlot = () => {
         ownerOfSlot: inputData,
       };
     });
-    console.log(orderUpdated);
+
     axios
       .post('/bookingSlots', {
         orders: orderUpdated,
