@@ -15,6 +15,7 @@ const Dashboards = () => {
         Willkommen Herr {state.userInfo.name}
       </Typography>
       <Button onClick={() => navigate('/CreateEvent')}>Event erstellen</Button>
+      <Button onClick={() => navigate('/OverviewEvents')}>Deine Events</Button>
     </div>
   );
 };

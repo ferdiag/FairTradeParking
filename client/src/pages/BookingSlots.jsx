@@ -8,7 +8,7 @@ import axios from '../assets/api/axios';
 import { handleChange } from '../assets/lib/handleChange';
 import { Store } from '../stores/datastore';
 import { Paper, Typography } from '@mui/material';
-
+import { v4 as uuid } from 'uuid';
 const BookingSlot = () => {
   const { state, dispatch } = useContext(Store);
   const initData = {
@@ -45,7 +45,8 @@ const BookingSlot = () => {
     const orderUpdated = state.orders.map((item) => {
       return {
         ...item,
-        _id: state.allEvents[state.indexOfSelectedEvent]._id,
+        eventId: state.allEvents[state.indexOfSelectedEvent]._id,
+        id: uuid(),
         selectedDay: state.selectedDay.date,
         name: state.allEvents[state.indexOfSelectedEvent].name,
         ownerOfSlot: inputData,

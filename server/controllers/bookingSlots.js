@@ -15,7 +15,7 @@ const bookingSlots = async (req, res) => {
     res.send({ result: 'error' });
     client.close();
   }
-  const id = req.body.orders[0]._id;
+  const id = req.body.orders[0].eventId;
   try {
     const event = await eventCollection.findOne({
       _id: ObjectId(`${id}`),
@@ -35,15 +35,15 @@ const bookingSlots = async (req, res) => {
         bookedSlots: occupiedSlots,
       },
     };
+    try {
+      const options = { upsert: true, new: true };
+      await eventCollection.updateOne(filter, updateDoc, options);
+      res.send({ result: 'success' });
+    } catch (err) {
+      res.send({ result: 'error' });
+      client.close();
+    }
   } catch {
-    res.send({ result: 'error' });
-    client.close();
-  }
-
-  try {
-    const options = { upsert: true, new: true };
-    await eventCollection.updateOne(filter, updateDoc, options);
-  } catch (err) {
     res.send({ result: 'error' });
     client.close();
   }

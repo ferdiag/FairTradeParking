@@ -10,11 +10,13 @@ import {
 import React, { useContext, useState } from 'react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { handleSlotsOfADayArray } from '../assets/lib/handleCreateSlotsOfADayArray';
 import { Store } from '../stores/datastore';
 
 const ListOfSlotsOfADay = () => {
   const { state, dispatch } = useContext(Store);
-  console.log(state);
+  const [startIndex, setStartIndex] = useState(null);
+  const [targetIndex, setTargetIndex] = useState(null);
   const [event, setEvent] = useState(
     //vorübergehend
     state.allEvents[state.indexOfSelectedEvent]
@@ -23,94 +25,19 @@ const ListOfSlotsOfADay = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    //um Error nach einem refresh zu vermeiden
     if (event === undefined || state.selectedDay === undefined) {
       navigate('/OverviewEvents');
       return;
     }
-    //um Error nach einem refresh zu vermeiden
 
-    const lengthOfSlot = event.lengthOfSlot;
-    const arrayLengths = 1440 / lengthOfSlot;
+    const newArray = handleSlotsOfADayArray(
+      event,
+      state.selectedDay.bookedSlots
+    );
 
-    let newArray = [];
-    let startingHour = 0;
-    let startingMinutes = 0;
-    let endHour = 0;
-    let endMinutes = lengthOfSlot;
-    for (let i = 0; i < arrayLengths; i++) {
-      const isHighterthan60 = startingMinutes + lengthOfSlot;
-
-      if (lengthOfSlot < 60) {
-        if (isHighterthan60 >= 60) {
-          endMinutes = startingMinutes + lengthOfSlot - 60;
-          endHour += 1;
-          newArray = [
-            ...newArray,
-            {
-              startingHour,
-              startingMinutes,
-              endHour,
-              endMinutes,
-              isChecked: false,
-              isBooked: false,
-            },
-          ];
-
-          startingHour = startingHour + 1;
-          startingMinutes = endMinutes;
-        } else {
-          endMinutes = startingMinutes + lengthOfSlot;
-          newArray = [
-            ...newArray,
-            {
-              startingHour,
-              startingMinutes,
-              endHour,
-              endMinutes,
-              isChecked: false,
-              isBooked: false,
-            },
-          ];
-          startingMinutes = endMinutes;
-        }
-      }
-      if (lengthOfSlot >= 60) {
-        newArray = [
-          ...newArray,
-          {
-            startingHour: Math.floor(startingHour / 60),
-            startingMinutes: startingHour % 60,
-            endHour: Math.floor((startingHour + lengthOfSlot) / 60),
-            endMinutes: (startingHour + lengthOfSlot) % 60,
-            isChecked: false,
-            isBooked: false,
-          },
-        ];
-
-        startingHour = startingHour + lengthOfSlot;
-      }
-    }
-
-    let updatedArray = [];
-
-    for (let slot of newArray) {
-      [...updatedArray] = [...updatedArray, slot];
-      for (let bookedSlot of state.selectedDay.bookedSlots) {
-        if (
-          slot.startingHour === bookedSlot.startingHour &&
-          slot.startingMinutes === bookedSlot.startingMinutes
-        ) {
-          updatedArray[updatedArray.length - 1] = {
-            ...updatedArray[updatedArray.length - 1],
-            isBooked: true,
-            ownerOfSlot: bookedSlot.ownerOfSlot,
-          };
-        }
-      }
-    }
-
-    setArrayOfSlots(updatedArray);
-  }, []);
+    setArrayOfSlots(newArray);
+  }, [state]);
 
   const handleSale = () => {
     const orders = arrayOfSlots.filter((item) => item.isChecked === true);
@@ -125,26 +52,59 @@ const ListOfSlotsOfADay = () => {
   const handleIsChecked = (e, i) => {
     const copyArray = [...arrayOfSlots];
     if (copyArray[i].isChecked === true) {
-      console.log('unchecking');
       copyArray[i] = { ...copyArray[i], isChecked: false };
     } else {
-      console.log('checking');
       copyArray[i] = { ...copyArray[i], isChecked: true };
     }
     setArrayOfSlots(copyArray);
   };
+
+  const onDragEnd = () => {
+    const copyArray = [...arrayOfSlots];
+    const draggedItem = copyArray[startIndex];
+    if (copyArray[targetIndex].isBooked === true) {
+      dispatch({
+        type: 'SET_ERROR_MESSAGE',
+        payload: 'der Slot ist leider schon vergeben.',
+      });
+      return;
+    }
+    console.log(startIndex);
+    const bookedSlotsSortedByTime = copyArray.filter(
+      (slot) => slot.isBooked === true
+    );
+    const indexOfDraggedItem = bookedSlotsSortedByTime.findIndex(
+      (slot) => draggedItem.id === slot.id
+    );
+    bookedSlotsSortedByTime[indexOfDraggedItem] = {
+      ...bookedSlotsSortedByTime[indexOfDraggedItem],
+      startingHour: copyArray[targetIndex].startingHour,
+      startingMinutes: copyArray[targetIndex].startingMinutes,
+      endHour: copyArray[targetIndex].endHour,
+      endMinutes: copyArray[targetIndex].endMinutes,
+    };
+
+    const newArray = handleSlotsOfADayArray(event, bookedSlotsSortedByTime);
+
+    setArrayOfSlots(newArray);
+
+    setStartIndex(null);
+    setTargetIndex(null);
+  };
+
   return (
     <Container style={{ marginTop: '60px' }}>
-      {' '}
       <Button onClick={handleSale}>weiter zur Buchung</Button>
       <List>
         <Typography variant="h5">
           {state.selectedDay == undefined ? '' : state.selectedDay.date}
         </Typography>
         <Typography variant="h6">wählen sie einen Slot aus</Typography>
-        {arrayOfSlots.map((slot, index) => {
+        {arrayOfSlots.map((slot, i) => {
           let stringOfStartingHour = slot.startingHour;
           let stringOfStartingMinutes = slot.startingMinutes;
+
+          //null zum Datum hinzufügen
 
           if (slot.startingHour < 10) {
             stringOfStartingHour = [0, slot.startingHour].join('');
@@ -154,7 +114,15 @@ const ListOfSlotsOfADay = () => {
           }
           return (
             <ListItem
-              key={index}
+              draggable={state.isLoggedIn?'true':false}
+              onDragStart={() => setStartIndex(i)}
+              onDragEnter={() => {
+                setTargetIndex(i),
+                  console.log(startIndex, state.indexOfSelectedEvent);
+              }}
+              onDragEnd={onDragEnd}
+              onDragOver={(e) => e.preventDefault()}
+              key={i}
               style={
                 slot.isBooked
                   ? { border: '1px solid red' }
@@ -215,7 +183,7 @@ const ListOfSlotsOfADay = () => {
                 disabled={slot.isBooked ? true : false}
                 edge="end"
                 onChange={(e) => {
-                  handleIsChecked(e, index);
+                  handleIsChecked(e, i);
                 }}
               />
             </ListItem>

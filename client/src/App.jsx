@@ -29,8 +29,8 @@ function App() {
     axios
       .get('/')
       .then((res) => {
-        setLoadingError(false),
-          dispatch({ type: 'EVENTS_UPDATE', payload: res.data.allEvents });
+        setLoadingError(false), console.log(res.data.allEvents);
+        dispatch({ type: 'EVENTS_UPDATE', payload: res.data.allEvents });
       })
       .catch(() => setLoadingError(true));
   }, []);

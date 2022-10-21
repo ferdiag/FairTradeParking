@@ -11,6 +11,7 @@ export const handleCheckPassword = (password) => {
     const noNumber = 'Das Password muss eine Zahl beinhalten';
     errorMessage = noNumber;
   }
+
   const includesLowerCase = array.filter(
     (character) =>
       character.toLowerCase() === character && isNaN(character) === true
@@ -23,11 +24,13 @@ export const handleCheckPassword = (password) => {
     (character) =>
       character.toUpperCase() === character && isNaN(character) === true
   );
+
   if (includesUperCase.length === 0) {
+    console.log('ich sollte hier nicht sein');
     errorMessage = errorMessage.concat(
       ', ',
       'Das Password muss einen großen Buchstaben beinhalten'
     );
-    return errorMessage;
   }
+  return errorMessage;
 };

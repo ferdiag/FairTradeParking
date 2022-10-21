@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const MongoClient = require('mongodb').MongoClient;
 
 const register = async (req, res) => {
+  console.log('ich bin dabei 1');
   const {
     namePartner,
     nameCompany,
@@ -18,11 +19,12 @@ const register = async (req, res) => {
   let hashedPassword;
 
   await bcrypt.hash(password, saltRounds, async (err, hash) => {
-    let userCollection;
+    let userCollection, client;
+    console.log('ich bin dabei');
     try {
       hashedPassword = hash;
-      console.log(hash);
-      const client = await MongoClient.connect(
+
+      client = await MongoClient.connect(
         'mongodb://localhost:27017/tradefair',
         {
           useNewUrlParser: true,

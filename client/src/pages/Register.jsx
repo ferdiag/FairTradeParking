@@ -107,7 +107,7 @@ const Register = () => {
       return;
     }
     let errorMessage = handleCheckPassword(inputData.password);
-
+    console.log(errorMessage);
     if (errorMessage.length > 0) {
       if (errorMessage[0] === ',') {
         errorMessage = errorMessage.substring(2);
