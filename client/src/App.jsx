@@ -53,7 +53,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/Register" element={<Register />} />
-          <Route path="/BookingSlots" element={<BookingSlots />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/OverviewEvents" element={<OverviewEvents />} />
           <Route path="/BookingSlots" element={<BookingSlots />} />{' '}

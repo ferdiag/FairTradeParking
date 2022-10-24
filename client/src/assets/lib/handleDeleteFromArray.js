@@ -3,7 +3,6 @@ const handleDeleteFromArray = (e, indexOfItemToDelete, array, setArray) => {
     (item, index) => indexOfItemToDelete !== index
   );
   setArray(updatedArray);
-  console.log(updatedArray);
 };
 
 export { handleDeleteFromArray };

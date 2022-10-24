@@ -26,7 +26,6 @@ export const handleCheckPassword = (password) => {
   );
 
   if (includesUperCase.length === 0) {
-    console.log('ich sollte hier nicht sein');
     errorMessage = errorMessage.concat(
       ', ',
       'Das Password muss einen großen Buchstaben beinhalten'

@@ -4,6 +4,7 @@ import {
   Grid,
   List,
   ListItem,
+  ListItemButton,
   Typography,
 } from '@mui/material';
 import React from 'react';
@@ -27,7 +28,6 @@ const OverviewEvents = () => {
       const eventsOfUser = state.allEvents.filter(
         (event) => event.emailOfCreator === state.userInfo.eMail
       );
-      console.log(eventsOfUser);
       setEventToDisplay(eventsOfUser);
     }
   };
@@ -41,7 +41,7 @@ const OverviewEvents = () => {
       )}
       <List>
         {eventToDisplay.map((event, index) => (
-          <ListItem key={index} onClick={(e) => handleClick(e, index)}>
+          <ListItemButton key={index} onClick={(e) => handleClick(e, index)}>
             <Grid container spacing={2} style={{ boarder: '1px solid black' }}>
               <Grid xs={12} item>
                 {' '}
@@ -54,7 +54,7 @@ const OverviewEvents = () => {
                 {event.dateEnd}
               </Grid>
             </Grid>
-          </ListItem>
+          </ListItemButton>
         ))}
       </List>
     </Container>

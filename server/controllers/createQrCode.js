@@ -18,7 +18,6 @@ const createQrCode = async (req, res) => {
   //   const allUsers = await usersCollection.find().toArray();
   //   const allNfts = handleGetAllNfts(allUsers);
   //   const allNftsOnTheMarket = allNfts.filter((nft) => nft.isSale);
-  //   console.log(allNfts);
   //   res.status(200).json({ allNfts: allNftsOnTheMarket });
 };
 module.exports = createQrCode;

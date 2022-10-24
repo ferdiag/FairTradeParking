@@ -15,7 +15,7 @@ const Home = () => {
         <Typography variant="h3">Herzlich Wilkommen bei Fairtrade</Typography>
         <Typography>
           Sie planen ein Event und brauchen ein Parksystem, welches Sie auf Ihre
-          Bedürfnisse abestimmmt ist?
+          Bedürfnisse abstimmen können?
         </Typography>
         <Button onClick={() => navigate('/infos')}>
           Hier erfahren sie mehr

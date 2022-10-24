@@ -5,7 +5,6 @@ require('dotenv').config();
 
 const login = async (req, res) => {
   const data = req.body;
-  console.log(data);
   let client;
   let user;
   try {
@@ -18,7 +17,6 @@ const login = async (req, res) => {
     user = await userCollection.findOne({ eMail: data.email });
 
     if (!user) {
-      console.log('es gab keinen User');
       res.send('error');
       client.close();
       return;

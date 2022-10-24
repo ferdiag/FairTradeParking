@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const MongoClient = require('mongodb').MongoClient;
 
 const register = async (req, res) => {
-  console.log('ich bin dabei 1');
   const {
     namePartner,
     nameCompany,
@@ -20,7 +19,6 @@ const register = async (req, res) => {
 
   await bcrypt.hash(password, saltRounds, async (err, hash) => {
     let userCollection, client;
-    console.log('ich bin dabei');
     try {
       hashedPassword = hash;
 

@@ -17,14 +17,12 @@ const CreateEvent = () => {
   const { state, disptach } = useContext(Store);
 
   const handleSave = () => {
-    console.log('hallo');
     let currentDay = dateStart;
     let duration = 1;
 
     while (currentDay != dateEnd) {
-      var day = new Date(currentDay);
-      console.log(day);
-      var nextDay = new Date(day);
+      const day = new Date(currentDay);
+      const nextDay = new Date(day);
       nextDay.setDate(day.getDate() + 1);
       currentDay = nextDay.toISOString().split('T')[0]; //Formatierung vom Datum
       duration++;
@@ -39,7 +37,6 @@ const CreateEvent = () => {
       email: state.userInfo.eMail,
     };
 
-    console.log(payload);
     axios.post('/createEvent', payload, (err, res) => {
       console.log(res);
     });

@@ -6,7 +6,7 @@ const Users = () => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    let isMounted = true; // state wird nicht verändert, wenn der component ist unmounted
+    let isMounted = true; // state wird nicht verändert, wenn der component unmounted ist
     const controller = new AbortController(); // stoppt request wenn der Controller is unmounted
 
     const getUsers = async () => {

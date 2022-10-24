@@ -12,23 +12,19 @@ const Login = () => {
     email: '',
     password: '',
   };
-
-  const [inputData, setInputData] = useState(initData);
-
   const navigate = useNavigate();
+  const [inputData, setInputData] = useState(initData);
 
   const handleSend = async () => {
     await axios
       .post('/login', inputData)
       .then((res, err) => {
-        console.log(res);
         if (res.data === 'error') {
           throw Error('Password oder Benutzername sind incorrect');
         }
 
         if (res.data.result === 'success') {
           dispatch({ type: 'USER_LOGIN', payload: res.data.userData });
-          console.log(res.data);
           navigate('/dashboard');
         }
       })

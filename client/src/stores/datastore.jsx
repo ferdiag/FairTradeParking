@@ -52,6 +52,11 @@ const reducer = (state, action) => {
         ...state,
         orders: action.payload,
       };
+    case 'SET_ACTIVE_PAGE':
+      return {
+        ...state,
+        page: action.payload,
+      };
   }
 };
 

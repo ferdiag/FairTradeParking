@@ -10,7 +10,7 @@ function handleChange(e, setState, length = 25, dispatch) {
 
   setState((prevVal) => ({
     ...prevVal,
-    [name]: value,
+    [name]: value.trim(),
   }));
 }
 
