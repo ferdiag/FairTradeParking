@@ -23,6 +23,7 @@ const pages = [
   { to: '/Login', name: 'Login', linkName: 'Login' },
   { to: '/Logout', name: 'Logout', linkName: 'Logout' },
   { to: '/Register', name: 'Register', linkName: 'Registrierung' },
+  { to: '/Dashboard', name: 'Dashboard', linkName: 'Dashboard' },
 ];
 
 const Appbar = () => {
@@ -40,9 +41,14 @@ const Appbar = () => {
               color: 'inherit',
               textDecoration: 'none',
             };
-            if (page.name === 'Logout' && state.isLoggedIn === false) {
+            if (
+              (page.name === 'Logout' && state.isLoggedIn === false) ||
+              (page.name === 'Login' && state.isLoggedIn === true) ||
+              (page.name === 'Dashboard' && state.isLoggedIn === false)
+            ) {
               style.display = 'none';
             }
+
             const handleChangeActivePage = (e) => {
               if (e.target.name === 'Logout' && state.isLoggedIn === true) {
                 dispatch({ type: 'USER_LOGOUT' });

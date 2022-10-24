@@ -47,7 +47,7 @@ function App() {
       <SnackbarError
         open={open}
         setOpen={setOpen}
-        errorMessage={state.errorMessage}
+        errorMessage={state?.errorMessage}
       />
       {!loadingError ? (
         <Routes>

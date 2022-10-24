@@ -15,7 +15,7 @@ const bookingSlots = async (req, res) => {
     res.send({ result: 'error' });
     client.close();
   }
-  const id = req.body.orders[0].eventId;
+  const id = req.body.orders[0].eventId; //muss noch verändert werden, falls der Kunde slots bei mehreren Events bucht
   try {
     const event = await eventCollection.findOne({
       _id: ObjectId(`${id}`),
@@ -38,7 +38,8 @@ const bookingSlots = async (req, res) => {
     try {
       const options = { upsert: true, new: true };
       await eventCollection.updateOne(filter, updateDoc, options);
-      res.send({ result: 'success' });
+      const allEvents = await eventCollection.find({}).toArray();
+      res.send({ allEvents });
     } catch (err) {
       res.send({ result: 'error' });
       client.close();

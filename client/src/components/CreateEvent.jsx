@@ -13,10 +13,10 @@ const CreateEvent = () => {
   const [dateStart, setDateStart] = useState('');
   const [dateEnd, setDateEnd] = useState('');
   const [lengthOfSlot, setLengthOfSlot] = useState('');
+  const { state, dispatch } = useContext(Store);
 
-  const { state, disptach } = useContext(Store);
-
-  const handleSave = () => {
+  const handleSave = (e) => {
+    e.preventDefault();
     let currentDay = dateStart;
     let duration = 1;
 
@@ -27,19 +27,34 @@ const CreateEvent = () => {
       currentDay = nextDay.toISOString().split('T')[0]; //Formatierung vom Datum
       duration++;
     }
-
+    const eMail = state.userInfo.eMail;
+    console.log(eMail);
     const payload = {
       name,
       dateStart,
       dateEnd,
       lengthOfSlot,
       duration,
-      email: state.userInfo.eMail,
+      email: eMail,
     };
 
-    axios.post('/createEvent', payload, (err, res) => {
-      console.log(res);
-    });
+    axios
+      .post('/createEvent', payload)
+      .then((data) => {
+        console.log(data.data.event);
+        const eventsUpdated = [...state.allEvents, data.data.event];
+        dispatch({
+          type: 'EVENTS_UPDATE',
+          payload: eventsUpdated,
+        });
+      })
+      .catch(() =>
+        dispatch({
+          type: 'SET_ERROR_MESSAGE',
+          payload:
+            'das Event wurde nicht erstellt, bitte versuchen Sie es später noch einmal',
+        })
+      );
   };
 
   return (

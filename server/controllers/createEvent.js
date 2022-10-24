@@ -25,7 +25,6 @@ const createEvent = async (req, res) => {
     bookedSlots: [],
   };
 
-  const allEvents = await eventCollection.find({}).toArray();
   const resEventCollection = await eventCollection.insertOne(event);
 
   const user = await userCollection.findOne({ eMail: req.body.email });
@@ -35,7 +34,7 @@ const createEvent = async (req, res) => {
 
   const filter = { email: user.email };
   const updatedEvents = [...user.events, resEventCollection.insertedId];
-  console.log(user, updatedEvents);
+
   let updateDoc;
   updateDoc = {
     $set: {
@@ -46,7 +45,7 @@ const createEvent = async (req, res) => {
 
   await userCollection.updateOne(filter, updateDoc, options);
   const allUser = await userCollection.find({}).toArray();
-  console.log(allUser);
+  res.send({ event });
   //   .then(() => res.status(200).json({ result: 'success' }))
   //   .catch((err) => console.log(err));
 
